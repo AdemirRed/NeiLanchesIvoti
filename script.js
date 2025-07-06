@@ -713,9 +713,11 @@ function updateCustomizationEvents() {
         checkbox.addEventListener('change', function() {
             const ingredient = this.getAttribute('data-ingredient');
             if (this.checked) {
-                removedIngredients = removedIngredients.filter(item => item !== ingredient);
+                if (!removedIngredients.includes(ingredient)) {
+                    removedIngredients.push(ingredient);
+                }
             } else {
-                removedIngredients.push(ingredient);
+                removedIngredients = removedIngredients.filter(item => item !== ingredient);
             }
         });
     });
@@ -826,26 +828,24 @@ function openCartModal() {
 
         let additionalText = '';
         if (item.additionals.length > 0) {
-            additionalText = `<small>Adicionais: ${item.additionals.map(a => a.name).join(', ')}</small>`;
+            additionalText = item.additionals.map(additional => additional.name).join(', ');
         }
 
         let removedText = '';
-        if (item.removedIngredients.length > 0) {
-            removedText = `<small>Sem: ${item.removedIngredients.join(', ')}</small>`;
+        if (item.removedIngredients && item.removedIngredients.length > 0) {
+            removedText = `<p>Ingredientes removidos: ${item.removedIngredients.join(', ')}</p>`;
+        } else {
+            removedText = '<p>Ingredientes removidos: Nenhum</p>';
         }
 
         cartItem.innerHTML = `
-            <div class="cart-item-details">
+            <div class="cart-item-info">
                 <h4>${item.name}</h4>
-                ${additionalText}
+                <p>Preço: R$ ${formatPrice(item.price)}</p>
+                ${additionalText ? `<p>Adicionais: ${additionalText}</p>` : ''}
                 ${removedText}
             </div>
-            <div class="cart-item-price">
-                R$ ${formatPrice(item.price)}
-            </div>
-            <button class="cart-item-remove" data-id="${item.id}">
-                <i class="fas fa-trash"></i>
-            </button>
+            <button class="cart-item-remove" data-id="${item.id}">Remover</button>
         `;
 
         cartItems.appendChild(cartItem);
