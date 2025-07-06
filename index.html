@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nei Lanches - Cardápio Online</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <img src="image.png" alt="Nei Lanches Logo" class="logo-img">
+                <h1>Nei Lanches</h1>
+            </div>
+            <nav class="nav">
+                <button class="menu-toggle" id="menuToggle">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <ul class="menu" id="menu">
+                    <li><a href="#lanches">Lanches</a></li>
+                    <li><a href="#dogs">Dog's</a></li>
+                    <li><a href="#calotas">Calotas</a></li>
+                    <li><a href="#porcoes">Porções</a></li>
+                    <li><a href="#bebidas">Bebidas</a></li>
+                    <li><a href="#adicionais">Adicionais</a></li>
+                </ul>
+            </nav>
+            <div class="cart-icon">
+                <button id="cartButton">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="cart-count" id="cartCount">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="main">
+        <section class="hero">
+            <div class="container">
+                <h2>Nosso Magnífico Cardápio</h2>
+                <p>Deliciosos lanches artesanais feitos com ingredientes de qualidade</p>
+            </div>
+        </section>
+
+        <section id="lanches" class="menu-section">
+            <div class="container">
+                <h2 class="section-title">Lanches</h2>
+                <div class="menu-grid" id="lanchesGrid"></div>
+            </div>
+        </section>
+
+        <section id="dogs" class="menu-section">
+            <div class="container">
+                <h2 class="section-title">Dog's</h2>
+                <div class="menu-grid" id="dogsGrid"></div>
+            </div>
+        </section>
+
+        <section id="calotas" class="menu-section">
+            <div class="container">
+                <h2 class="section-title">Calotas</h2>
+                <div class="menu-grid" id="calotasGrid"></div>
+            </div>
+        </section>
+
+        <section id="porcoes" class="menu-section">
+            <div class="container">
+                <h2 class="section-title">Porções</h2>
+                <div class="menu-grid" id="porcoesGrid"></div>
+            </div>
+        </section>
+
+        <section id="bebidas" class="menu-section">
+            <div class="container">
+                <h2 class="section-title">Bebidas</h2>
+                <div class="menu-grid" id="bebidasGrid"></div>
+            </div>
+        </section>
+
+        <section id="adicionais" class="menu-section">
+            <div class="container">
+                <h2 class="section-title">Adicionais</h2>
+                <div class="menu-grid" id="adicionaisGrid"></div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal de personalização -->
+    <div class="modal" id="customizeModal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalItemTitle">Personalizar Item</h2>
+            
+            <div class="customize-section">
+                <h3>Ingredientes</h3>
+                <div id="ingredientsList" class="ingredients-list"></div>
+            </div>
+            
+            <div class="customize-section">
+                <h3>Adicionais</h3>
+                <div id="additionalsList" class="additionals-list"></div>
+            </div>
+            
+            <div class="item-total">
+                <p>Preço: R$ <span id="itemPrice">0.00</span></p>
+            </div>
+            
+            <div class="modal-buttons">
+                <button id="addToCartBtn" class="btn-primary">Adicionar ao Carrinho</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal do carrinho -->
+    <div class="modal" id="cartModal">
+        <div class="modal-content cart-modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Seu Pedido</h2>
+            
+            <div id="cartItems" class="cart-items">
+                <!-- Itens do carrinho serão inseridos aqui -->
+            </div>
+            
+            <div class="cart-total">
+                <p>Total: R$ <span id="cartTotal">0.00</span></p>
+            </div>
+            
+            <div class="delivery-options">
+                <h3>Forma de Recebimento</h3>
+                <div class="option-buttons">
+                    <button id="pickupBtn" class="btn-option active">Retirada</button>
+                    <button id="deliveryBtn" class="btn-option">Entrega</button>
+                </div>
+            </div>
+            
+            <div id="deliveryForm" class="delivery-form hidden">
+                <h3>Informações de Entrega</h3>
+                <div class="form-group">
+                    <label for="customerName">Nome:</label>
+                    <input type="text" id="customerName" placeholder="Seu nome">
+                </div>
+                <div class="form-group">
+                    <label for="customerAddress">Endereço:</label>
+                    <input type="text" id="customerAddress" placeholder="Rua, número">
+                </div>
+                <div class="form-group">
+                    <label for="customerRef">Referência:</label>
+                    <input type="text" id="customerRef" placeholder="Ponto de referência">
+                </div>
+            </div>
+            
+            <div class="payment-options">
+                <h3>Forma de Pagamento</h3>
+                <select id="paymentMethod">
+                    <option value="pix">Pix</option>
+                    <option value="dinheiro">Dinheiro</option>
+                    <option value="cartao">Cartão</option>
+                </select>
+                <div id="changeContainer" class="hidden">
+                    <label for="changeAmount">Troco para:</label>
+                    <input type="number" id="changeAmount" placeholder="0.00">
+                </div>
+            </div>
+            
+            <div class="cart-buttons">
+                <button id="clearCartBtn" class="btn-secondary">Limpar Carrinho</button>
+                <button id="finishOrderBtn" class="btn-primary">Finalizar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-info">
+                <div class="logo">
+                    <img src="image.png" alt="Nei Lanches Logo" class="logo-img">
+                    <h3>Nei Lanches</h3>
+                </div>
+                <div class="contact-info">
+                    <p><i class="fas fa-phone"></i> (51) 99906-9981</p>
+                    <p><i class="fas fa-map-marker-alt"></i> Ivoti</p>
+                </div>
+            </div>
+            <div class="social-media">
+                <a href="#" target="_blank"><i class="fab fa-facebook"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="#" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Nei Lanches. Todos os direitos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
