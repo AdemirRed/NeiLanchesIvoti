@@ -647,16 +647,20 @@ function renderMenu() {
 
 // Abrir modal de personalização
 function openCustomizeModal(item, category) {
+    if (!customizeModal || !modalItemTitle || !itemPrice || !ingredientsList || !additionalsList) {
+        console.error('Elementos do DOM necessários não encontrados.');
+        return;
+    }
     currentItem = item;
     modalItemTitle.textContent = item.name;
     itemPrice.textContent = formatPrice(item.price);
-    
+
     // Limpar listas anteriores
     ingredientsList.innerHTML = '';
     additionalsList.innerHTML = '';
     removedIngredients = [];
     selectedAdditionals = [];
-    
+
     // Adicionar ingredientes para remover
     if (item.ingredients && item.ingredients.length > 0) {
         item.ingredients.forEach(ingredient => {
@@ -664,7 +668,7 @@ function openCustomizeModal(item, category) {
             ingredientItem.classList.add('ingredient-item');
             ingredientItem.innerHTML = `
                 <label>
-                    <input type="checkbox" data-ingredient="${ingredient}"> ${ingredient}
+                    <input type="checkbox" data-ingredient="${ingredient}"> Remover ${ingredient}
                 </label>
             `;
             ingredientsList.appendChild(ingredientItem);
@@ -674,14 +678,9 @@ function openCustomizeModal(item, category) {
         noIngredients.textContent = 'Não há ingredientes para remover';
         ingredientsList.appendChild(noIngredients);
     }
-    
-    // Mostrar seção de adicionais apenas para Dogs (cachorro quente)
-    const additionalsSection = document.querySelector('.customize-section:nth-child(2)');
-    
-    if (category === 'dogs') {
-        additionalsSection.classList.remove('hidden');
-        
-        // Adicionar adicionais disponíveis para dogs
+
+    // Mostrar seção de adicionais
+    if (menuData.adicionais && menuData.adicionais.length > 0) {
         menuData.adicionais.forEach(additional => {
             const additionalItem = document.createElement('div');
             additionalItem.classList.add('additional-item');
@@ -694,13 +693,14 @@ function openCustomizeModal(item, category) {
             additionalsList.appendChild(additionalItem);
         });
     } else {
-        // Esconder seção de adicionais para outros produtos
-        additionalsSection.classList.add('hidden');
+        const noAdditionals = document.createElement('p');
+        noAdditionals.textContent = 'Não há adicionais disponíveis';
+        additionalsList.appendChild(noAdditionals);
     }
-    
+
     // Exibir modal
     customizeModal.style.display = 'block';
-    
+
     // Atualizar eventos
     updateCustomizationEvents();
 }
@@ -713,30 +713,31 @@ function updateCustomizationEvents() {
         checkbox.addEventListener('change', function() {
             const ingredient = this.getAttribute('data-ingredient');
             if (this.checked) {
-                removedIngredients.push(ingredient);
-            } else {
                 removedIngredients = removedIngredients.filter(item => item !== ingredient);
+            } else {
+                removedIngredients.push(ingredient);
             }
         });
     });
-    
+
     // Eventos de adicionais
     const additionalCheckboxes = additionalsList.querySelectorAll('input[type="checkbox"]');
     additionalCheckboxes.forEach(checkbox => {
         checkbox.addEventListener('change', function() {
             const additionalId = this.getAttribute('data-additional');
+            const additionalName = this.parentNode.textContent.split('(')[0].trim();
             const additionalPrice = parseFloat(this.getAttribute('data-price'));
-            
+
             if (this.checked) {
                 selectedAdditionals.push({
                     id: additionalId,
-                    name: this.parentNode.textContent.split('(')[0].trim(),
+                    name: additionalName,
                     price: additionalPrice
                 });
             } else {
                 selectedAdditionals = selectedAdditionals.filter(item => item.id !== additionalId);
             }
-            
+
             updateItemPrice();
         });
     });
@@ -745,12 +746,12 @@ function updateCustomizationEvents() {
 // Atualizar preço do item com adicionais
 function updateItemPrice() {
     let totalPrice = currentItem.price;
-    
+
     // Adicionar preço dos adicionais selecionados
     selectedAdditionals.forEach(additional => {
         totalPrice += additional.price;
     });
-    
+
     itemPrice.textContent = formatPrice(totalPrice);
 }
 
@@ -758,7 +759,7 @@ function updateItemPrice() {
 function addToCart() {
     const additionalPrice = selectedAdditionals.reduce((total, additional) => total + additional.price, 0);
     const totalPrice = currentItem.price + additionalPrice;
-    
+
     const cartItem = {
         id: `${currentItem.id}-${Date.now()}`,
         name: currentItem.name,
@@ -767,13 +768,13 @@ function addToCart() {
         removedIngredients: [...removedIngredients],
         additionals: [...selectedAdditionals]
     };
-    
+
     cart.push(cartItem);
     updateCartCount();
-    
+
     // Fechar modal
     customizeModal.style.display = 'none';
-    
+
     // Mostrar notificação
     showNotification(`${cartItem.name} adicionado ao carrinho!`);
 }
@@ -805,30 +806,34 @@ function updateCartCount() {
 
 // Abrir modal do carrinho
 function openCartModal() {
-    // Verificar se o carrinho está vazio
+    if (!cartModal || !cartItems || !cartTotal) {
+        console.error('Elementos do DOM necessários para o carrinho não encontrados.');
+        return;
+    }
+
     if (cart.length === 0) {
         showNotification('Seu carrinho está vazio!');
         return;
     }
-    
+
     // Limpar itens anteriores
     cartItems.innerHTML = '';
-    
+
     // Adicionar itens do carrinho
     cart.forEach(item => {
         const cartItem = document.createElement('div');
         cartItem.classList.add('cart-item');
-        
+
         let additionalText = '';
         if (item.additionals.length > 0) {
             additionalText = `<small>Adicionais: ${item.additionals.map(a => a.name).join(', ')}</small>`;
         }
-        
+
         let removedText = '';
         if (item.removedIngredients.length > 0) {
             removedText = `<small>Sem: ${item.removedIngredients.join(', ')}</small>`;
         }
-        
+
         cartItem.innerHTML = `
             <div class="cart-item-details">
                 <h4>${item.name}</h4>
@@ -842,16 +847,16 @@ function openCartModal() {
                 <i class="fas fa-trash"></i>
             </button>
         `;
-        
+
         cartItems.appendChild(cartItem);
     });
-    
+
     // Atualizar valor total
     updateCartTotal();
-    
+
     // Exibir modal
     cartModal.style.display = 'block';
-    
+
     // Atualizar eventos
     updateCartEvents();
 }
@@ -895,15 +900,17 @@ function updateCartEvents() {
 // Definir opção de entrega
 function setDeliveryOption(option) {
     deliveryOption = option;
-    
+
     if (option === 'pickup') {
         pickupBtn.classList.add('active');
         deliveryBtn.classList.remove('active');
         deliveryForm.classList.add('hidden');
-    } else {
+    } else if (option === 'delivery') { // Adicionar verificação para 'delivery'
         pickupBtn.classList.remove('active');
         deliveryBtn.classList.add('active');
         deliveryForm.classList.remove('hidden');
+    } else {
+        console.error('Opção de entrega inválida:', option);
     }
 }
 
@@ -1052,17 +1059,17 @@ function init() {
     // Fechar modais
     closeModals.forEach(closeBtn => {
         closeBtn.addEventListener('click', function() {
-            customizeModal.style.display = 'none';
-            cartModal.style.display = 'none';
+            if (customizeModal) customizeModal.style.display = 'none';
+            if (cartModal) cartModal.style.display = 'none';
         });
     });
     
     // Evento de clique fora dos modais para fechar
     window.addEventListener('click', function(e) {
-        if (e.target === customizeModal) {
+        if (e.target === customizeModal && customizeModal) {
             customizeModal.style.display = 'none';
         }
-        if (e.target === cartModal) {
+        if (e.target === cartModal && cartModal) {
             cartModal.style.display = 'none';
         }
     });
@@ -1074,3 +1081,4 @@ function init() {
 
 // Inicializar quando o DOM estiver carregado
 document.addEventListener('DOMContentLoaded', init);
+
