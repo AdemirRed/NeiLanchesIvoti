@@ -33,11 +33,25 @@ body {
     background-image: linear-gradient(to bottom, #0a0a0a, #121212);
 }
 
-.container {
-    width: 100%;
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 15px;
+/* Scrollbar personalizada para todo o site */
+body::-webkit-scrollbar {
+    width: 12px;
+    background: var(--background-color);
+}
+body::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 8px;
+    border: 2px solid var(--background-color);
+    box-shadow: 0 0 8px var(--primary-color);
+}
+body::-webkit-scrollbar-track {
+    background: var(--card-background);
+}
+
+/* Firefox */
+body {
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--card-background);
 }
 
 /* Header styles */
@@ -236,6 +250,47 @@ body {
     margin: 0 auto;
     color: var(--text-muted);
     text-shadow: 0 2px 4px rgba(0, 0, 0, 0.8);
+}
+
+/* Espaçamento lateral maior para containers principais */
+.container {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+@media (max-width: 900px) {
+    .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}
+
+@media (max-width: 600px) {
+    .container {
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+}
+
+/* Espaçamento extra nas seções principais para evitar colar nas laterais */
+.menu-section {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.footer .container {
+    padding-left: 32px;
+    padding-right: 32px;
+}
+
+@media (max-width: 900px) {
+    .footer .container {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
 }
 
 /* Menu sections */
@@ -622,6 +677,16 @@ body {
 .cart-items::-webkit-scrollbar-thumb {
     background-color: rgba(255, 204, 0, 0.3);
     border-radius: 4px;
+}
+
+/* Scrollbar para elementos com overflow (ex: .cart-items) já está estilizada, mas pode ser reforçada: */
+.cart-items::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 8px;
+    border: 2px solid var(--card-background);
+}
+.cart-items::-webkit-scrollbar-track {
+    background: var(--card-background);
 }
 
 .cart-item {

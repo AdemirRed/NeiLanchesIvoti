@@ -639,10 +639,10 @@ function renderMenu() {
         }
     });
     
-    // Renderizar adicionais
-    menuData.adicionais.forEach(item => {
-        adicionaisGrid.appendChild(createMenuItem(item, 'adicionais'));
-    });
+    // NÃO renderizar adicionais, pois não existe mais a grid no HTML
+    // menuData.adicionais.forEach(item => {
+    //     adicionaisGrid.appendChild(createMenuItem(item, 'adicionais'));
+    // });
 }
 
 // Abrir modal de personalização
