@@ -773,6 +773,7 @@ function addToCart() {
 
     cart.push(cartItem);
     updateCartCount();
+    saveToLocalStorage();
 
     // Fechar modal
     customizeModal.style.display = 'none';
@@ -900,6 +901,7 @@ function updateCartEvents() {
 // Definir opção de entrega
 function setDeliveryOption(option) {
     deliveryOption = option;
+    saveToLocalStorage();
 
     if (option === 'pickup') {
         pickupBtn.classList.add('active');
@@ -918,6 +920,7 @@ function setDeliveryOption(option) {
 function removeFromCart(itemId) {
     cart = cart.filter(item => item.id !== itemId);
     updateCartCount();
+    saveToLocalStorage();
     
     // Se o carrinho ficar vazio, fechar modal
     if (cart.length === 0) {
@@ -933,6 +936,7 @@ function removeFromCart(itemId) {
 function clearCart() {
     cart = [];
     updateCartCount();
+    saveToLocalStorage();
     cartModal.style.display = 'none';
     showNotification('Carrinho limpo!');
 }
@@ -1011,6 +1015,53 @@ function finishOrder() {
     cartModal.style.display = 'none';
 }
 
+// Função para salvar dados no localStorage
+function saveToLocalStorage() {
+    const addressData = {
+        name: document.getElementById('customerName')?.value || '',
+        address: document.getElementById('customerAddress')?.value || '',
+        reference: document.getElementById('customerRef')?.value || '',
+        payment: document.getElementById('paymentMethod')?.value || '',
+        change: document.getElementById('changeAmount')?.value || ''
+    };
+    localStorage.setItem('nei_cart', JSON.stringify(cart));
+    localStorage.setItem('nei_deliveryOption', deliveryOption);
+    localStorage.setItem('nei_addressData', JSON.stringify(addressData));
+}
+
+// Função para restaurar dados do localStorage
+function restoreFromLocalStorage() {
+    const savedCart = localStorage.getItem('nei_cart');
+    if (savedCart) {
+        cart = JSON.parse(savedCart);
+        updateCartCount();
+    }
+    const savedDelivery = localStorage.getItem('nei_deliveryOption');
+    if (savedDelivery) {
+        deliveryOption = savedDelivery;
+    }
+    const savedAddress = localStorage.getItem('nei_addressData');
+    if (savedAddress) {
+        const data = JSON.parse(savedAddress);
+        if (document.getElementById('customerName')) document.getElementById('customerName').value = data.name || '';
+        if (document.getElementById('customerAddress')) document.getElementById('customerAddress').value = data.address || '';
+        if (document.getElementById('customerRef')) document.getElementById('customerRef').value = data.reference || '';
+        if (document.getElementById('paymentMethod')) document.getElementById('paymentMethod').value = data.payment || '';
+        if (document.getElementById('changeAmount')) document.getElementById('changeAmount').value = data.change || '';
+    }
+}
+
+// Salvar endereço e pagamento ao digitar
+function setupAddressListeners() {
+    ['customerName','customerAddress','customerRef','paymentMethod','changeAmount'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', saveToLocalStorage);
+            el.addEventListener('change', saveToLocalStorage);
+        }
+    });
+}
+
 // Inicializar
 function init() {
     // Renderizar menu
@@ -1080,5 +1131,9 @@ function init() {
 }
 
 // Inicializar quando o DOM estiver carregado
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', function() {
+    init();
+    restoreFromLocalStorage();
+    setupAddressListeners();
+});
 
