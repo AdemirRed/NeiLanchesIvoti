@@ -1266,32 +1266,34 @@ body.light-theme {
 }
 body.dark-theme {
   --background-color: #181818;
-  --card-background: #232323;
-  --modal-background: #232323;
-  --header-background: #181818;
-  --footer-background: #181818;
-  --primary-color: #e53935;
-  --primary-hover: #b71c1c;
+  --card-background: #151515;
+  --modal-background: #1a1a1a;
+  --header-background: #050505;
+  --footer-background: #050505;
+  --primary-color: #ff5500;
+  --primary-hover: #ff6622;
   --secondary-color: #232323;
   --accent-color: #00ccff;
-  --text-color: #f5f5f5;
+  --text-color: #e0e0e0;
   --text-muted: #a0a0a0;
-  --text-light: #fff;
-  --border-color: #333;
-  --box-shadow: 0 8px 16px rgba(0,0,0,0.4), 0 0 20px rgba(229,57,53,0.15);
-  --glow-effect: 0 0 10px rgba(229,57,53,0.3);
-  --neon-glow: 0 0 5px rgba(229,57,53,0.5), 0 0 20px rgba(229,57,53,0.2);
-  --accent-glow: 0 0 10px rgba(0,204,255,0.3), 0 0 20px rgba(0,204,255,0.2);
+  --text-light: #ffffff;
+  --border-color: #333333;
+  --box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 85, 0, 0.15);
+  --glow-effect: 0 0 10px rgba(255, 85, 0, 0.3);
+  --neon-glow: 0 0 5px rgba(255, 85, 0, 0.5), 0 0 20px rgba(255, 85, 0, 0.2);
+  --accent-glow: 0 0 10px rgba(0, 204, 255, 0.3), 0 0 20px rgba(0, 204, 255, 0.2);
 }
+
 body {
   background: var(--background-color);
   color: var(--text-color);
   transition: background 0.3s, color 0.3s;
 }
+
 .theme-switcher-btn {
   position: fixed;
-  top: 49px;
-  right: 75px;
+  top: 28px;
+  right: 28px;
   z-index: 1200;
   background: var(--primary-color);
   color: #fff;
@@ -1303,13 +1305,17 @@ body {
   box-shadow: 0 2px 8px rgba(0,0,0,0.08);
   transition: background 0.2s, top 0.2s, right 0.2s;
 }
+
 .theme-switcher-btn:hover {
   background: #b71c1c;
 }
+
 @media (max-width: 600px) {
   .theme-switcher-btn {
-    top: 12px;
-    right: 12px;
+    top: auto;
+    bottom: 18px;
+    right: 18px;
+    left: auto;
     font-size: 0.95rem;
     padding: 7px 14px;
   }
