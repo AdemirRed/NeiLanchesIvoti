@@ -1062,6 +1062,56 @@ function setupAddressListeners() {
     });
 }
 
+// === Tema Claro/Escuro ===
+function applyTheme(theme) {
+    document.body.classList.remove('light-theme', 'dark-theme');
+    document.body.classList.add(theme + '-theme');
+}
+
+function detectSystemTheme() {
+    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+        return 'dark';
+    } else {
+        return 'light';
+    }
+}
+
+function setupThemeSwitcher() {
+    // Criar botão
+    let themeBtn = document.createElement('button');
+    themeBtn.id = 'themeSwitcherBtn';
+    themeBtn.className = 'theme-switcher-btn';
+    document.body.appendChild(themeBtn);
+
+    // Função para atualizar texto do botão
+    function updateBtnText(theme) {
+        themeBtn.textContent = theme === 'dark' ? 'Claro' : 'Escuro';
+    }
+
+    // Detectar tema salvo ou do sistema
+    let savedTheme = localStorage.getItem('nei_theme');
+    let theme = savedTheme || detectSystemTheme();
+    applyTheme(theme);
+    updateBtnText(theme);
+
+    // Alternar tema ao clicar
+    themeBtn.addEventListener('click', function() {
+        theme = (theme === 'dark') ? 'light' : 'dark';
+        applyTheme(theme);
+        updateBtnText(theme);
+        localStorage.setItem('nei_theme', theme);
+    });
+
+    // Atualizar se o sistema mudar (opcional)
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+        if (!localStorage.getItem('nei_theme')) {
+            theme = e.matches ? 'dark' : 'light';
+            applyTheme(theme);
+            updateBtnText(theme);
+        }
+    });
+}
+
 // Inicializar
 function init() {
     // Renderizar menu
@@ -1135,5 +1185,6 @@ document.addEventListener('DOMContentLoaded', function() {
     init();
     restoreFromLocalStorage();
     setupAddressListeners();
+    setupThemeSwitcher(); // Adiciona o botão e lógica de tema
 });
 
